@@ -21,12 +21,20 @@ final tweetControllerProvider = StateNotifierProvider<TweetController, bool>(
 );
 
 // Provider for geeting my tweets .............
+
 final getTweetsProvider = FutureProvider(
   (ref) {
     final tweetController = ref.watch(tweetControllerProvider.notifier);
     return tweetController.getTweets();
   },
 );
+
+// Provider for getting latest tweets just tweeted......
+
+final getLatestTweetProvider = StreamProvider((ref) {
+  final tweetApi = ref.watch(tweetApiProvider);
+  return tweetApi.getLatestTweet();
+});
 
 class TweetController extends StateNotifier<bool> {
   final Ref _ref;
