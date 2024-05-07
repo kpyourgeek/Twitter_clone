@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:the_iconic/constants/constants.dart';
 import 'package:the_iconic/constants/ui_constants.dart';
+import 'package:the_iconic/features/auth/tweet/views/create_tweet_view.dart';
 import 'package:the_iconic/theme/pallete.dart';
 // import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -26,6 +27,10 @@ class _HomeViewState extends State<HomeView> {
     });
   }
 
+  void onCreateTweet() {
+    Navigator.push(context, CreateTweetScreen.route());
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,7 +40,9 @@ class _HomeViewState extends State<HomeView> {
         children: UIConstants.bottomBarPages,
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          onCreateTweet();
+        },
         child: const Icon(
           Icons.add,
           color: Pallete.blackColor,

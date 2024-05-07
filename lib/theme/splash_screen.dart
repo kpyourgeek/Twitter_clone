@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:the_iconic/features/auth/view/signup_view.dart';
+// import 'package:the_iconic/features/auth/view/signup_view.dart';
 import 'package:the_iconic/theme/pallete.dart';
+
+//****** BEFORE USING SPLASH SCREEN REMEMBER IT HAS PROBLEMS PLEASE */
+//****** IT IS CAUSING PROBLEMS IT TAKES YOU TO SIGN UP SCREEN AFTER LOADGING */
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -13,10 +16,13 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(seconds: 3), () {
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => const SignupView()));
-    });
+    Future.delayed(
+      const Duration(seconds: 3),
+      // () {
+      //   Navigator.push(
+      //       context, MaterialPageRoute(builder: (context) => const SignupView()));
+      // })
+    );
   }
 
   @override

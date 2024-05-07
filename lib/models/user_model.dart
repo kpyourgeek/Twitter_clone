@@ -2,8 +2,8 @@ import 'package:flutter/foundation.dart';
 
 @immutable
 class UserModel {
-  final String name;
   final String email;
+  final String name;
   final List<String> followers;
   final List<String> following;
   final String profilePic;
@@ -11,10 +11,9 @@ class UserModel {
   final String uid;
   final String bio;
   final bool isTwitterBlue;
-
   const UserModel({
-    required this.name,
     required this.email,
+    required this.name,
     required this.followers,
     required this.following,
     required this.profilePic,
@@ -25,8 +24,8 @@ class UserModel {
   });
 
   UserModel copyWith({
-    String? name,
     String? email,
+    String? name,
     List<String>? followers,
     List<String>? following,
     String? profilePic,
@@ -36,8 +35,8 @@ class UserModel {
     bool? isTwitterBlue,
   }) {
     return UserModel(
-      name: name ?? this.name,
       email: email ?? this.email,
+      name: name ?? this.name,
       followers: followers ?? this.followers,
       following: following ?? this.following,
       profilePic: profilePic ?? this.profilePic,
@@ -49,43 +48,46 @@ class UserModel {
   }
 
   Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'name': name,
-      'email': email,
-      'followers': followers,
-      'following': following,
-      'profilePic': profilePic,
-      'bannerPic': bannerPic,
-      'bio': bio,
-      'isTwitterBlue': isTwitterBlue,
-    };
+    final result = <String, dynamic>{};
+
+    result.addAll({'email': email});
+    result.addAll({'name': name});
+    result.addAll({'followers': followers});
+    result.addAll({'following': following});
+    result.addAll({'profilePic': profilePic});
+    result.addAll({'bannerPic': bannerPic});
+    result.addAll({'bio': bio});
+    result.addAll({'isTwitterBlue': isTwitterBlue});
+
+    return result;
   }
 
   factory UserModel.fromMap(Map<String, dynamic> map) {
     return UserModel(
-      name: map['name'] as String,
-      email: map['email'] as String,
-      followers: List<String>.from((map['followers'] as List<String>)),
-      following: List<String>.from((map['following'] as List<String>)),
-      profilePic: map['profilePic'] as String,
-      bannerPic: map['bannerPic'] as String,
-      uid: map['\$id'] as String,
-      bio: map['bio'] as String,
-      isTwitterBlue: map['isTwitterBlue'] as bool,
+      email: map['email'] ?? '',
+      name: map['name'] ?? '',
+      followers: List<String>.from(map['followers']),
+      following: List<String>.from(map['following']),
+      profilePic: map['profilePic'] ?? '',
+      bannerPic: map['bannerPic'] ?? '',
+      uid: map['\$id'] ?? '',
+      bio: map['bio'] ?? '',
+      isTwitterBlue: map['isTwitterBlue'] ?? false,
     );
   }
 
   @override
   String toString() {
-    return 'UserModel(name: $name, email: $email, followers: $followers, following: $following, profilePic: $profilePic, bannerPic: $bannerPic, uid: $uid, bio: $bio, isTwitterBlue: $isTwitterBlue)';
+    return 'UserModel(email: $email, name: $name, followers: $followers, following: $following, profilePic: $profilePic, bannerPic: $bannerPic, uid: $uid, bio: $bio, isTwitterBlue: $isTwitterBlue)';
   }
 
   @override
-  bool operator ==(covariant UserModel other) {
+  bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
-    return other.name == name &&
+    return other is UserModel &&
         other.email == email &&
+        other.name == name &&
         listEquals(other.followers, followers) &&
         listEquals(other.following, following) &&
         other.profilePic == profilePic &&
@@ -97,8 +99,8 @@ class UserModel {
 
   @override
   int get hashCode {
-    return name.hashCode ^
-        email.hashCode ^
+    return email.hashCode ^
+        name.hashCode ^
         followers.hashCode ^
         following.hashCode ^
         profilePic.hashCode ^

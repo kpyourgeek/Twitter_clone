@@ -1,5 +1,6 @@
 import 'package:appwrite/appwrite.dart';
 import 'package:appwrite/models.dart';
+import 'package:appwrite/models.dart' as model;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:the_iconic/constants/appwrite/appwrite_providers.dart';
@@ -12,13 +13,15 @@ final authAPIProvider = Provider((ref) {
 });
 
 abstract class IAuthApi {
-  FutureEither<String> signUp({
+  FutureEither<model.User> signUp({
     required String email,
     required String password,
   });
 
   FutureEither<String> logIn({required String email, required String password});
-  Future<UserResponse> currentUserAccount();
+  // Future <UserResponse> currentUserAccount();
+  Future<User?> currentUserAccount();
+
   FutureEitherVoid logOut();
 }
 
@@ -27,37 +30,48 @@ class AuthApi implements IAuthApi {
   AuthApi({
     required Account account,
   }) : _account = account;
-  User? _cachedUser;
+  // User? _cachedUser;
 
   // caching user
 
   @override
-  Future<UserResponse> currentUserAccount({bool forceRefresh = false}) async {
-    if (_cachedUser != null && forceRefresh == false) {
-      return UserResponse(user: _cachedUser!);
-    }
+  Future<User?> currentUserAccount() async {
     try {
-      final loggedInUser = await _account.get();
-      _cachedUser = loggedInUser;
-    } on AppwriteException catch (e) {
-      if (e.message != null &&
-          e.message!.contains('Failed host lookup: \'cloud.appwrite.io\'')) {
-        return const UserResponse(
-          user: null,
-          errorMessage:
-              'Network error. Please check your internet connection and try again.',
-        );
-      }
+      return await _account.get();
+    } on AppwriteException {
+      return null;
     } catch (e) {
-      return UserResponse(user: null, errorMessage: e.toString());
+      return null;
     }
-    return const UserResponse(user: null, errorMessage: 'Unexpected error');
   }
+
+  // @override
+  // Future<UserResponse> currentUserAccount({bool forceRefresh = false}) async {
+  //   if (_cachedUser != null && forceRefresh == false) {
+  //     return UserResponse(user: _cachedUser!);
+  //   }
+  //   try {
+  //     final loggedInUser = await _account.get();
+  //     _cachedUser = loggedInUser;
+  //   } on AppwriteException catch (e) {
+  //     if (e.message != null &&
+  //         e.message!.contains('Failed host lookup: \'cloud.appwrite.io\'')) {
+  //       return const UserResponse(
+  //         user: null,
+  //         errorMessage:
+  //             'Network error. Please check your internet connection and try again.',
+  //       );
+  //     }
+  //   } catch (e) {
+  //     return UserResponse(user: null, errorMessage: e.toString());
+  //   }
+  //   return const UserResponse(user: null, errorMessage: 'Unexpected error');
+  // }
 
 // creating a user in an appwrite
 
   @override
-  FutureEither<String> signUp({
+  FutureEither<model.User> signUp({
     required String email,
     required String password,
   }) async {
@@ -68,7 +82,7 @@ class AuthApi implements IAuthApi {
         password: password,
       );
 
-      return right(account.$createdAt);
+      return right(account);
     } on AppwriteException catch (e, stackTrace) {
       return left(
         Failure(e.message.toString(), stackTrace),

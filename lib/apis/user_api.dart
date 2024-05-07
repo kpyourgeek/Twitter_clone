@@ -1,4 +1,5 @@
 import 'package:appwrite/appwrite.dart';
+import 'package:appwrite/models.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:the_iconic/constants/appwrite/appwrite_constants.dart';
@@ -14,6 +15,8 @@ final userApiProvider = Provider((ref) {
 
 abstract class IUserApi {
   FutureEitherVoid saveUserData(UserModel userModel);
+
+  Future<Document> getUserData(String uid);
 }
 
 class UserApi implements IUserApi {
@@ -25,7 +28,7 @@ class UserApi implements IUserApi {
       await _db.createDocument(
         databaseId: AppwriteConstants.databaseId,
         collectionId: AppwriteConstants.userCollection,
-        documentId: ID.unique(),
+        documentId: userModel.uid,
         data: userModel.toMap(),
       );
       return right(null);
@@ -40,5 +43,16 @@ class UserApi implements IUserApi {
         st,
       ));
     }
+  }
+
+//********** if something goes wrong remove async and await , because wasn't their before */
+
+  @override
+  Future<Document> getUserData(String uid) {
+    return _db.getDocument(
+      databaseId: AppwriteConstants.databaseId,
+      collectionId: AppwriteConstants.userCollection,
+      documentId: uid,
+    );
   }
 }
