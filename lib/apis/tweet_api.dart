@@ -19,6 +19,7 @@ abstract class ITweet {
   FutureEither<Document> shareTweet(
     Tweet tweet,
   );
+  Future<List<Document>> getTweets();
 }
 
 class TweetApi implements ITweet {
@@ -47,5 +48,17 @@ class TweetApi implements ITweet {
         Failure(e.toString(), st),
       );
     }
+  }
+
+// ************* CHECK THIS METHOD IF TWEETS DOESN'T COME PLEASE
+
+  @override
+  Future<List<Document>> getTweets() async {
+    final documents = await _db.listDocuments(
+      databaseId: AppwriteConstants.databaseId,
+      collectionId: AppwriteConstants.tweetsCollection,
+    );
+    final listOfDocuments = documents.documents;
+    return listOfDocuments;
   }
 }

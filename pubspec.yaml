@@ -19,6 +19,8 @@ dependencies:
   flutter_svg: ^2.0.10+1
   image_picker: ^1.1.1
   carousel_slider: ^4.2.1
+  timeago: ^3.6.1
+  any_link_preview: ^3.0.1
 
 dev_dependencies:
   flutter_test:

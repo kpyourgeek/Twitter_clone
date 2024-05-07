@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class Pallete {
+  static const Color twitterBlue = Color(0xFF00ACEE);
   static const Color backgroundColor = Colors.black;
   static const Color searchBarColor = Color.fromRGBO(32, 35, 39, 1);
   static const Color greenColor = Color.fromRGBO(15, 249, 116, 0.965);

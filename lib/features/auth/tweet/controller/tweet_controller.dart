@@ -9,12 +9,22 @@ import 'package:the_iconic/core/enums/tweet_type_enum.dart';
 import 'package:the_iconic/core/utilis.dart';
 import 'package:the_iconic/models/tweet_model.dart';
 
+// Provider for my class
+
 final tweetControllerProvider = StateNotifierProvider<TweetController, bool>(
   (ref) {
     final tweetApi = ref.watch(tweetApiProvider);
     final storageApi = ref.watch(storageApiProvider);
     return TweetController(
         ref: ref, tweetApi: tweetApi, storageApi: storageApi);
+  },
+);
+
+// Provider for geeting my tweets .............
+final getTweetsProvider = FutureProvider(
+  (ref) {
+    final tweetController = ref.watch(tweetControllerProvider.notifier);
+    return tweetController.getTweets();
   },
 );
 
@@ -31,6 +41,12 @@ class TweetController extends StateNotifier<bool> {
         _tweetApi = tweetApi,
         _storageApi = storageApi,
         super(false);
+
+// ************* CHECK THIS METHOD IF TWEETS DOESN'T COME PLEASE
+  Future<List<Tweet>> getTweets() async {
+    final tweetsList = await _tweetApi.getTweets();
+    return tweetsList.map((tweet) => Tweet.fromMap(tweet.data)).toList();
+  }
 
   void shareTweet({
     required String text,
