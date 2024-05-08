@@ -18,6 +18,26 @@ class TweetList extends ConsumerWidget {
                   if (data.events.contains(
                       'databases.*.collections.${AppwriteConstants.tweetsCollection}.documents.*.create')) {
                     tweets.insert(0, Tweet.fromMap(data.payload));
+                  } else if (data.events.contains(
+                      'databases.*.collections.${AppwriteConstants.tweetsCollection}.documents.*.update')) {
+                    // id of tweet retweeted
+                    final startingPoint =
+                        data.events[0].lastIndexOf('documents.');
+                    final endingPoint = data.events[0].lastIndexOf('.update');
+                    final tweetId = data.events[0]
+                        .substring(startingPoint + 10, endingPoint);
+                    // getting the retweed tweet ,
+                    // we used .first because we know it's first tweeted retrieved to be replaced
+                    var tweet = tweets.where((element) {
+                      return element.id == tweetId;
+                    }).first;
+                    // getting tweet index
+                    final tweetIndex = tweets.indexOf(tweet);
+                    // replacing tweet by first removing existing one and then adding new one
+                    tweets.removeWhere((element) => element.id == tweetId);
+                    // adding new
+                    tweet = Tweet.fromMap(data.payload);
+                    tweets.insert(tweetIndex, tweet);
                   }
                   return ListView.builder(
                     itemCount: tweets.length,
