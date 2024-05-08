@@ -41,7 +41,7 @@ class _CreateTweetScreenState extends ConsumerState<CreateTweetScreen> {
           images: images,
           context: context,
         );
-    // Navigator.pop(context);
+    textTweetcontroller.clear();
   }
 
 // function for picking Images from gallery
@@ -75,9 +75,13 @@ class _CreateTweetScreenState extends ConsumerState<CreateTweetScreen> {
                   children: [
                     Row(
                       children: [
-                        CircleAvatar(
-                          backgroundImage: NetworkImage(currentUser.profilePic),
-                          radius: 30,
+                        Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: CircleAvatar(
+                            backgroundImage:
+                                NetworkImage(currentUser.profilePic),
+                            radius: 30,
+                          ),
                         ),
                         const SizedBox(width: 15),
                         Expanded(

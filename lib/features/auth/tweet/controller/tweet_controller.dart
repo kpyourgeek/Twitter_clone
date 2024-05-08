@@ -8,6 +8,7 @@ import 'package:the_iconic/controller/auth_controller.dart';
 import 'package:the_iconic/core/enums/tweet_type_enum.dart';
 import 'package:the_iconic/core/utilis.dart';
 import 'package:the_iconic/models/tweet_model.dart';
+import 'package:the_iconic/models/user_model.dart';
 
 // Provider for my class
 
@@ -54,6 +55,18 @@ class TweetController extends StateNotifier<bool> {
   Future<List<Tweet>> getTweets() async {
     final tweetsList = await _tweetApi.getTweets();
     return tweetsList.map((tweet) => Tweet.fromMap(tweet.data)).toList();
+  }
+
+  void likeTweet(Tweet tweet, UserModel user) async {
+    List<String> likes = tweet.likes;
+    if (likes.contains(user.uid)) {
+      likes.remove(user.uid);
+    } else {
+      likes.add(user.uid);
+    }
+    tweet = tweet.copyWith(likes: likes);
+    final res = await _tweetApi.likeTweet(tweet);
+    res.fold((l) => null, (r) => null);
   }
 
   void shareTweet({
