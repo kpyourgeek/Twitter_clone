@@ -40,6 +40,7 @@ class _CreateTweetScreenState extends ConsumerState<CreateTweetScreen> {
           text: textTweetcontroller.text,
           images: images,
           context: context,
+          repliedTo: '',
         );
     textTweetcontroller.clear();
   }

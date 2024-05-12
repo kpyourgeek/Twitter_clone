@@ -31,11 +31,25 @@ final getTweetsProvider = FutureProvider(
   },
 );
 
+// Provider for getting all replies on my tweet
+final getRepliestoTweetProvider = FutureProvider.family(
+  (ref, Tweet tweet) {
+    final tweetController = ref.watch(tweetControllerProvider.notifier);
+    return tweetController.getRepliesTo(tweet);
+  },
+);
+
 // Provider for getting latest tweets just tweeted......
 
 final getLatestTweetProvider = StreamProvider((ref) {
   final tweetApi = ref.watch(tweetApiProvider);
   return tweetApi.getLatestTweet();
+});
+// provider for getting tweet by id
+
+final getTweetByIdProvider = FutureProvider.family((ref, String id) async {
+  final tweetController = ref.watch(tweetControllerProvider.notifier);
+  return tweetController.getTweetById(id);
 });
 
 class TweetController extends StateNotifier<bool> {
@@ -52,12 +66,19 @@ class TweetController extends StateNotifier<bool> {
         _storageApi = storageApi,
         super(false);
 
-// ************* CHECK THIS METHOD IF TWEETS DOESN'T COME PLEASE
+// funnctionon for fetching tweets
   Future<List<Tweet>> getTweets() async {
     final tweetsList = await _tweetApi.getTweets();
     return tweetsList.map((tweet) => Tweet.fromMap(tweet.data)).toList();
   }
 
+  // function to just get one tweet by it's id
+  Future<Tweet> getTweetById(String id) async {
+    final tweet = await _tweetApi.getTweetById(id);
+    return Tweet.fromMap(tweet.data);
+  }
+
+// function for liking a tweet
   void likeTweet(Tweet tweet, UserModel currentUser) async {
     List<String> likes = tweet.likes;
     if (likes.contains(currentUser.uid)) {
@@ -104,10 +125,18 @@ class TweetController extends StateNotifier<bool> {
     });
   }
 
+  // function for getting replies on tweet
+  Future<List<Tweet>> getRepliesTo(Tweet tweet) async {
+    final documents = await _tweetApi.getRepliesToTweet(tweet);
+    return documents.map((tweet) => Tweet.fromMap(tweet.data)).toList();
+  }
+
+// Function for sharing or creating tweets
   void shareTweet({
     required String text,
     required List<File> images,
     required BuildContext context,
+    required String repliedTo,
   }) {
     if (text.isEmpty) {
       showSnackBar(context, 'Please Write something');
@@ -118,19 +147,19 @@ class TweetController extends StateNotifier<bool> {
         images: images,
         text: text,
         context: context,
+        repliedTo: repliedTo,
       );
     } else {
-      _shareTextTweet(
-        text: text,
-        context: context,
-      );
+      _shareTextTweet(text: text, context: context, repliedTo: repliedTo);
     }
   }
 
-  void _shareImageTweet(
-      {required List<File> images,
-      required String text,
-      required BuildContext context}) async {
+  void _shareImageTweet({
+    required List<File> images,
+    required String text,
+    required BuildContext context,
+    required String repliedTo,
+  }) async {
     state = true;
 
     final hashtags = _getHashTagsFromText(text);
@@ -151,7 +180,7 @@ class TweetController extends StateNotifier<bool> {
       id: '',
       reshareCount: 0,
       retweetedBy: '',
-      repliedTo: '',
+      repliedTo: repliedTo,
     );
     final res = await _tweetApi.shareTweet(tweet);
     res.fold(
@@ -163,10 +192,10 @@ class TweetController extends StateNotifier<bool> {
     state = false;
   }
 
-  void _shareTextTweet({
-    required String text,
-    required BuildContext context,
-  }) async {
+  void _shareTextTweet(
+      {required String text,
+      required BuildContext context,
+      required String repliedTo}) async {
     state = true;
     final hashtags = _getHashTagsFromText(text);
     String link = _getLinkFromSentence(text);
@@ -185,7 +214,7 @@ class TweetController extends StateNotifier<bool> {
       id: '',
       reshareCount: 0,
       retweetedBy: '',
-      repliedTo: '',
+      repliedTo: repliedTo,
     );
     final res = await _tweetApi.shareTweet(tweet);
     res.fold(

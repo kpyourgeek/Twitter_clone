@@ -69,7 +69,6 @@ class AuthApi implements IAuthApi {
   // }
 
 // creating a user in an appwrite
-
   @override
   FutureEither<model.User> signUp({
     required String email,
@@ -95,8 +94,10 @@ class AuthApi implements IAuthApi {
   // leting user enter an app, through sign in
 
   @override
-  FutureEither<String> logIn(
-      {required String email, required String password}) async {
+  FutureEither<String> logIn({
+    required String email,
+    required String password,
+  }) async {
     try {
       final account =
           await _account.createEmailSession(email: email, password: password);
@@ -104,9 +105,16 @@ class AuthApi implements IAuthApi {
         account.userId.toString(),
       );
     } on AppwriteException catch (e, stackTrace) {
-      return (left(Failure(e.message.toString(), stackTrace)));
+      return (left(
+        Failure(
+          e.message.toString(),
+          stackTrace,
+        ),
+      ));
     } catch (e, stackTrace) {
-      return left(Failure(e.toString(), stackTrace));
+      return left(
+        Failure(e.toString(), stackTrace),
+      );
     }
   }
 
