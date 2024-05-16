@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:the_iconic/constants/assets_constants.dart';
 import 'package:the_iconic/features/auth/tweet/widgets/tweet_list.dart';
+import 'package:the_iconic/features/searching/view/search_view.dart';
 import 'package:the_iconic/theme/pallete.dart';
 
 class UIConstants {
@@ -27,7 +28,7 @@ class UIConstants {
 
   static List<Widget> bottomBarPages = [
     const TweetList(),
-    const Text('search screen'),
+    const SearchView(),
     const Text('notification screen'),
   ];
 }

@@ -17,6 +17,7 @@ abstract class IUserApi {
   FutureEitherVoid saveUserData(UserModel userModel);
 
   Future<Document> getUserData(String uid);
+  Future<List<Document>> searchUserByName(String name);
 }
 
 class UserApi implements IUserApi {
@@ -54,5 +55,19 @@ class UserApi implements IUserApi {
       collectionId: AppwriteConstants.userCollection,
       documentId: uid,
     );
+  }
+
+  @override
+  Future<List<Document>> searchUserByName(String name) async {
+    final searchResults = await _db.listDocuments(
+      databaseId: AppwriteConstants.databaseId,
+      collectionId: AppwriteConstants.userCollection,
+      queries: [
+        Query.search('name', name),
+      ],
+    );
+    final listOfAvailableUsers = searchResults.documents;
+
+    return listOfAvailableUsers;
   }
 }
