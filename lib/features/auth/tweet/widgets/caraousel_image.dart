@@ -2,9 +2,10 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:the_iconic/theme/pallete.dart';
 
+@immutable
 class CaraouselImage extends StatefulWidget {
-  List<String> imageLinks = [];
-  CaraouselImage({super.key, required this.imageLinks});
+  final List<String> imageLinks;
+  const CaraouselImage({super.key, required this.imageLinks});
 
   @override
   State<CaraouselImage> createState() => _CaraouselImageState();
