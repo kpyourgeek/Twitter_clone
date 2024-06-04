@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:the_iconic/features/user_profile/view/user_profile_view.dart';
 import 'package:the_iconic/models/user_model.dart';
 import 'package:the_iconic/theme/theme.dart';
 
@@ -9,6 +10,9 @@ class SearchTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
+      onTap: () {
+        Navigator.push(context, UserProfileView.route(userModel));
+      },
       leading: CircleAvatar(
         backgroundImage: NetworkImage(userModel.profilePic),
         radius: 28,

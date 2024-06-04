@@ -7,7 +7,8 @@ final searchControllerProvider = StateNotifierProvider((ref) {
   return SearchController(userApi: userApi);
 });
 
-final searchUserProvider = FutureProvider.family((ref, String name) async {
+final searchUserProvider =
+    FutureProvider.family.autoDispose((ref, String name) async {
   final searchUserController = ref.watch(searchControllerProvider.notifier);
   return searchUserController.searchUser(name);
 });

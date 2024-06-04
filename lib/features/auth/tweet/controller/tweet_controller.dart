@@ -52,6 +52,13 @@ final getTweetByIdProvider = FutureProvider.family((ref, String id) async {
   return tweetController.getTweetById(id);
 });
 
+// getting user latest tweets
+
+final getUserLatestTweetProvider = StreamProvider((ref) {
+  final tweetApi = ref.watch(tweetApiProvider);
+  return tweetApi.getUserLatestTweets();
+});
+
 class TweetController extends StateNotifier<bool> {
   final Ref _ref;
   final TweetApi _tweetApi;

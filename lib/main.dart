@@ -5,9 +5,6 @@ import 'package:the_iconic/controller/auth_controller.dart';
 import 'package:the_iconic/features/auth/home/view/home_view.dart';
 import 'package:the_iconic/features/auth/view/login_view.dart';
 import 'package:the_iconic/theme/splash_screen.dart';
-// import 'package:the_iconic/features/auth/view/login_view.dart';
-// import 'package:the_iconic/theme/splash_screen.dart';
-// import 'package:the_iconic/features/auth/view/signup_view.dart';
 import 'package:the_iconic/theme/theme.dart';
 
 void main() {

@@ -26,6 +26,8 @@ abstract class ITweet {
   FutureEither<Document> updateReshareCount(Tweet tweet);
   Future<List<Document>> getRepliesToTweet(Tweet tweet);
   Future<Document> getTweetById(String id);
+  Future<List<Document>> getUserTweets(String uid);
+  Stream<RealtimeMessage> getUserLatestTweets();
 }
 
 class TweetApi implements ITweet {
@@ -152,5 +154,26 @@ class TweetApi implements ITweet {
       collectionId: AppwriteConstants.tweetsCollection,
       documentId: id,
     );
+  }
+
+  @override
+  Future<List<Document>> getUserTweets(String uid) async {
+    final documents = await _db.listDocuments(
+      databaseId: AppwriteConstants.databaseId,
+      collectionId: AppwriteConstants.tweetsCollection,
+      queries: [Query.equal('uid', uid)],
+    );
+    final userTweets = documents.documents;
+    return userTweets;
+  }
+
+  @override
+  Stream<RealtimeMessage> getUserLatestTweets() {
+    final userTweets = _realtime.subscribe(
+      [
+        'databases.${AppwriteConstants.databaseId}.collections.${AppwriteConstants.tweetsCollection}.documents'
+      ],
+    ).stream;
+    return userTweets;
   }
 }
