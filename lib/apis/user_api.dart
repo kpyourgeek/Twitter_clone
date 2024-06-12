@@ -10,7 +10,9 @@ import 'package:the_iconic/models/user_model.dart';
 
 final userApiProvider = Provider((ref) {
   final db = ref.watch(appwriteDatabasesProvider);
-  return UserApi(db: db);
+  final realtime = ref.watch(appwriteRealtimeProvider);
+
+  return UserApi(db: db, realtime: realtime);
 });
 
 abstract class IUserApi {
@@ -18,11 +20,17 @@ abstract class IUserApi {
 
   Future<Document> getUserData(String uid);
   Future<List<Document>> searchUserByName(String name);
+  FutureEitherVoid updateUserProfile(UserModel userModel);
+  Stream<RealtimeMessage> getLatestUserProfileData();
 }
 
 class UserApi implements IUserApi {
   final Databases _db;
-  UserApi({required Databases db}) : _db = db;
+  final Realtime _realtime;
+
+  UserApi({required Databases db, required Realtime realtime})
+      : _db = db,
+        _realtime = realtime;
   @override
   FutureEitherVoid saveUserData(UserModel userModel) async {
     try {
@@ -69,5 +77,35 @@ class UserApi implements IUserApi {
     final listOfAvailableUsers = searchResults.documents;
 
     return listOfAvailableUsers;
+  }
+
+  @override
+  FutureEitherVoid updateUserProfile(UserModel userModel) async {
+    try {
+      await _db.updateDocument(
+        databaseId: AppwriteConstants.databaseId,
+        collectionId: AppwriteConstants.userCollection,
+        documentId: userModel.uid,
+        data: userModel.toMap(),
+      );
+      return right(null);
+    } on AppwriteException catch (e, st) {
+      return left(Failure(
+        e.message ?? 'Unexpected error',
+        st,
+      ));
+    } catch (e, st) {
+      return left(Failure(
+        e.toString(),
+        st,
+      ));
+    }
+  }
+
+  @override
+  Stream<RealtimeMessage> getLatestUserProfileData() {
+    return _realtime.subscribe([
+      'databases.${AppwriteConstants.databaseId}.collections.${AppwriteConstants.userCollection}.documents'
+    ]).stream;
   }
 }

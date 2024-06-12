@@ -24,7 +24,6 @@ class MyApp extends ConsumerWidget {
       home: ref.watch(currentUserAccountProvider).when(
             // you've removed splash screen here because it was causing errors
             // so if you feel like putting it on make sure it won't cause you that bug again
-            loading: () => const SplashScreen(),
             data: (user) {
               if (user != null) {
                 return const HomeView();
@@ -34,6 +33,7 @@ class MyApp extends ConsumerWidget {
             error: (e, stackTrace) {
               return ErrorPage(error: e.toString());
             },
+            loading: () => const SplashScreen(),
           ),
     );
   }
